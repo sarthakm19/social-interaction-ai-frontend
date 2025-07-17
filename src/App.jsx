@@ -1,8 +1,9 @@
-import { useState } from 'react'
+
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { User, MessageCircle, XIcon, Heart, X } from 'lucide-react'
+import React, { useState } from 'react';
 
 const ProfileSelector = () => {
    return (
@@ -61,15 +62,27 @@ const MatchesList = () => {
 }
 
 function App() {
+
+   const [currentScreen , setCurrentScreen] = useState('profiles');
+
+   const renderScreen = () => {
+      switch (currentScreen) {
+         case 'matches':
+            return <MatchesList />;
+         case 'profiles':
+            return <ProfileSelector />;
+         default:
+            return <ProfileSelector />;
+      }
+   }
    return (
       <>
          <div className="max-w-md mx-auto p-4">
             <nav className="flex justify-between mb-4">
-               <User />
-               <MessageCircle />
+               <User onClick = {() => setCurrentScreen("profiles")}/>
+               <MessageCircle onClick = {() => setCurrentScreen("matches")}/>
             </nav>
-            {/* <ProfileSelector /> */}
-            <MatchesList />
+            {renderScreen()}
          </div>
       </>
    )

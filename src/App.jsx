@@ -38,16 +38,16 @@ const MatchesList = () => {
    return (
       <>
          <div className='rounded-lg shadow-lg p-4'>
-            <h2 className='text-2xl font-bold mb-4'>Matches</h2> 
+            <h2 className='text-2xl font-bold mb-4'>Matches</h2>
             <ul>
                {
                   [
-                     {id: 1 , firstName: 'Alice', lastName: 'Smith' , imageUrl: 'http://localhost:8080/images/67a77003-f2b8-4e0f-8c44-3c65222664d6.jpg'},
-                     {id: 2 , firstName: 'Bob', lastName: 'Johnson', imageUrl: 'http://localhost:8080/images/7599a30e-2876-4931-bfab-7d2c8cad2802.jpg'}
+                     { id: 1, firstName: 'Alice', lastName: 'Smith', imageUrl: 'http://localhost:8080/images/67a77003-f2b8-4e0f-8c44-3c65222664d6.jpg' },
+                     { id: 2, firstName: 'Bob', lastName: 'Johnson', imageUrl: 'http://localhost:8080/images/7599a30e-2876-4931-bfab-7d2c8cad2802.jpg' }
                   ].map((match) => (
                      <li key={match.id} className='mb-2'>
                         <button className='w-full hover:bg-gray-100 rounded flex items-center'>
-                           <img src={match.imageUrl} className='w-16 h-16 rounded-full mr-2'/>
+                           <img src={match.imageUrl} className='w-16 h-16 rounded-full mr-2' />
                            <span>
                               <h3 className='text-xl font-bold'>{match.firstName} {match.lastName}</h3>
                            </span>
@@ -61,9 +61,52 @@ const MatchesList = () => {
    )
 }
 
+const ChatScreen = () => {
+   const [input, setInput] = useState('');
+   const handleSend = () => {
+      // Logic to send the message
+      if (!input.trim()) return; // Prevent sending empty messages
+      console.log("Message sent:", input);
+      setInput(''); // Clear input after sending
+   }
+   return (
+      <>
+         {
+            <div className='rounded-lg shadow-lg p-4'>
+               <h2 className='text-2xl font-bold mb-4'>Chat</h2>
+               <div className='h-[50vh]border rounded overflow-y-auto mb-4 p-2'>
+               {
+                  [
+                     "Hello",
+                     "How are you?"
+                  ].map((message, index) => (
+                     <div key={index} className='p-2 bg-gray-100 rounded mb-2'>
+                        <div className='mb-4 p-2 rounded bg-gray-50'>{message}</div>
+                     </div>
+                  ))
+               }
+               </div>
+               <div className=''>
+                  <input 
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className='border flex-1 p-2 border rounded' 
+                  placeholder='type a message....'/>
+                  <button className='bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-2'
+                  onClick={handleSend}>
+                     Send
+                  </button>
+               </div>
+            </div>
+         }
+      </>
+   )
+}
+
 function App() {
 
-   const [currentScreen , setCurrentScreen] = useState('profiles');
+   const [currentScreen, setCurrentScreen] = useState('chat');
 
    const renderScreen = () => {
       switch (currentScreen) {
@@ -71,6 +114,8 @@ function App() {
             return <MatchesList />;
          case 'profiles':
             return <ProfileSelector />;
+         case 'chat':
+            return <ChatScreen />;
          default:
             return <ProfileSelector />;
       }
@@ -79,8 +124,8 @@ function App() {
       <>
          <div className="max-w-md mx-auto p-4">
             <nav className="flex justify-between mb-4">
-               <User onClick = {() => setCurrentScreen("profiles")}/>
-               <MessageCircle onClick = {() => setCurrentScreen("matches")}/>
+               <User onClick={() => setCurrentScreen("profiles")} />
+               <MessageCircle onClick={() => setCurrentScreen("matches")} />
             </nav>
             {renderScreen()}
          </div>

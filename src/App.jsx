@@ -1,19 +1,26 @@
-
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { User, MessageCircle, XIcon, Heart, X } from 'lucide-react'
-import React, { useState } from 'react';
+import React, { useState , useEffect, use } from 'react';
 
-const ProfileSelector = () => {
+const fetchProfiles = async() => {
+   const response = await fetch('http://localhost:8080/api/profile/random')
+   if(!response.ok){
+       throw new Error('Failed to fetch profiles');
+   }
+   return response.json();
+}
+
+const ProfileSelector = ({profile}) => {
    return (
       <>
          <h1>Profile Selector</h1>
          <div className="rounded-lg overflow-hidden bg-white shadow-lg">
             <div className="relative">
-               <img src="http://localhost:8080/images/67a77003-f2b8-4e0f-8c44-3c65222664d6.jpg" />
+               <img src={`http://localhost:8080/images/${profile?.imageUrl}`} />
                <div className="absolute bottom-0 left-0 right-0 text-white  p-4 bg-gradient-to-r from-black">
-                  <h2 className="text-3x1 font-bold">Alicia AI , 30</h2>
+                  <h2 className="text-3x1 font-bold">{profile?.firstName} {profile?.lastName}</h2>
                </div>
             </div>
             <div>
@@ -105,16 +112,34 @@ const ChatScreen = () => {
    )
 }
 
+
 function App() {
 
    const [currentScreen, setCurrentScreen] = useState('profiles');
+   const [currentProfile, setCurrentProfile] = useState(null);
 
+
+   const loadRandomProfiles = async () => {
+      try {
+         const profiles = await fetchProfiles();
+         setCurrentProfile(profiles); // Set the fetched profile(s)
+      } catch (error) {
+         console.error("Error fetching profiles:", error);
+      }
+   }
+
+
+   useEffect(() => {
+      loadRandomProfiles();
+   }, []);
+
+   
    const renderScreen = () => {
       switch (currentScreen) {
          case 'matches':
             return <MatchesList onSelectMatch={() => setCurrentScreen('chat')}/>;
          case 'profiles':
-            return <ProfileSelector />;
+            return <ProfileSelector profile={currentProfile} />; // Pass currentProfile here
          case 'chat':
             return <ChatScreen />;
          default:
